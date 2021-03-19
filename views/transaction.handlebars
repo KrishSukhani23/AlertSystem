@@ -1,0 +1,33 @@
+<style>
+         body {
+  background-image: url(/images/white.jpg);
+  font-family: 'Open Sans', sans-serif;
+  background-repeat: no-repeat;
+  background-size: 600px 500px;
+}
+</style>
+
+
+<br><br><br><br><br>
+<center><h1>Transaction History</h1></center>
+<center>
+    <br><br><br>
+<table border="1">
+    <tr>
+        <th>StockName</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>TimeStamp</th>
+        <th>Buy/Sell</th>
+    </tr>
+    {{#each transactions_array}}
+    <tr>
+        <td>{{company}}</td>
+        <td>{{price}}</td>
+        <td>{{quantity}}</td>
+        <td>{{time}}</td>
+        <td>{{buysell}}</td>
+    </tr>
+    {{/each}}
+</table>
+</center>

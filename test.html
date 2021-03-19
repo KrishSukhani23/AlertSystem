@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My Google Map</title>
+	<style>
+		#map{
+			height: 500px;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+
+	<h1>My Google Map</h1>
+	<div id="map"></div>
+
+	<script>
+
+
+		x = navigator.geolocation;
+		x.getCurrentPosition(success, failure)
+		
+		function success(position)
+		{
+			var lat = position.coords.latitude;
+			var long = position.coords.longitude;
+
+			var coords = new google.maps.LatLng(lat,long);
+
+			var options = {
+				center: coords,
+				zoom: 10,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+
+			}
+
+			var map = new google.maps.Map(document.getElementById("map"), options); 
+
+			var marker = new google.maps.Marker({
+				position: coords,
+				map: map
+			});
+		}
+			
+		function failure(){}
+
+		// function initMap() {
+			// var options = {
+			// 	center: { lat: 19.1874, lng: 72.8484 },
+			// 	zoom: 10,
+		// 	}
+		// 	var map = new google.maps.Map(document.getElementById("map"), options); 
+
+		// 	// var marker = new google.maps.Marker({
+		// 	// 	position: {lat: 19.1874, lng: 72.8484},
+		// 	// 	map: map
+		// 	// });
+
+
+		// 	addMarker({lat: 19.1874, lng: 72.8484})
+		// 	addMarker({lat: 19.0149, lng: 72.8631})
+		// 	addMarker({lat: 19.0843, lng: 72.8360})
+
+
+		// 	function addMarker(coords){
+		// 		var marker = new google.maps.Marker({
+		// 		position: coords,
+		// 		map: map
+		// 		});
+		// 	}
+		// }
+	</script>
+
+	<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLoYlfrfRzJfnasYq_5HyxOLYnpAO5ZsU&callback=initMap"
+
+	></script>
+
+	<!-- <script type="text/javascript">
+		var Latitude =[];
+		var Longitude = [];
+
+		var txtFile = new XMLHttpRequest();
+		txtFile.open("GET", "file://C:/Jay_Engg_Studies/Semester_6/MP_II/sample_photos/sample.csv", true);
+		txtFile.onreadystatechange = function()
+		{
+			allText = txtFile.responseText;
+			allTextLines = allText.split(/\r\n|\n/);
+		};
+
+		document.write(allTextLines);<br>
+		document.write(allText);<br>
+		document.write(txtFile);<br>
+
+
+		var csv = require('csv');
+		var csv_obj = csv();
+
+		function Column_data(signal_name, signal_type, initial_value, minimum, maximum) {
+		    this.signal_name = signal_name;
+		    this.signal_type = signal_type;
+		    this.initial_value = initial_value;
+		    this.minimum = minimum;
+		    this.maximum = maximum;
+		};
+
+		var csv_data = [];
+
+		csv_obj.from.path('C:/Jay_Engg_Studies/Semester_6/MP_II/sample_photos/sample.csv').to.array(function (data) {
+		    for (var row = 0; row < data.length; index++) {
+		        csv_data.push(new Column_data(data[row][0], data[row][1], data[row][2], data[row][3], data[row][4]));
+		    }
+		    console.log(csv_data);
+		});
+
+
+	</script> -->
+
+</body>
+</html>
