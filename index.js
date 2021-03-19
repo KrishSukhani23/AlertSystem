@@ -9,7 +9,7 @@ var fs = require('fs');
 var multer = require('multer')
 var upload = multer({ dest: 'uploads/' })
 var locations = []
-const gTTS = require('gtts'); 
+const gTTS = require('gtts');
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
@@ -42,7 +42,7 @@ app.get('/register', (req, res) => {
 
 app.get('/Homepage', async (req, res) => {
     res.render('Homepage', {
-        
+
     })
 })
 app.get('/Alert', (req, res) => {
@@ -70,9 +70,9 @@ app.post('/find', async (req, res) => {
         allMapData.push([response2.data[key2].Lat, response2.data[key2].Lon, response2.data[key2].Sign])
 
     }
-    
+
     function deg2rad(deg) {
-        return deg * (Math.PI/180)
+        return deg * (Math.PI / 180)
     }
     valsFinal = []
     lat1 = req.body.lat;
@@ -81,46 +81,46 @@ app.post('/find', async (req, res) => {
     console.log(lat1)
     console.log(lon1)
     console.log(locations)
-    allMapData.forEach(element =>{
+    allMapData.forEach(element => {
         lat2 = element[0];
         lon2 = element[1];
         sign = element[2];
         // console.log(lat2)
         // console.log(lon2)
         var R = 6371; // Radius of the earth in km
-        var dLat = deg2rad(lat2-lat1);  // deg2rad below
+        var dLat = deg2rad(lat2 - lat1);  // deg2rad below
         // console.log(dLat)
-        var dLon = deg2rad(lon2-lon1); 
+        var dLon = deg2rad(lon2 - lon1);
         // console.log(dLon)
-        var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         // console.log(a)
         // console.log(c)
         var d = R * c; // Distance in km
         console.log(d)
-        if(d<5){
+        if (d < 5) {
             valsFinal.push(sign)
         }
     })
     console.log(valsFinal)
-    var speech = 'These are the signs you will approach soon\n'; 
+    var speech = 'These are the signs you will approach soon\n';
 
-    valsFinal.forEach(function callback(value, index){
-        speech = speech + `${index+1}` + " " + `${value}`;
+    valsFinal.forEach(function callback(value, index) {
+        speech = speech + `${index + 1}` + " " + `${value}`;
 
     })
     console.log(speech)
-    var gtts = new gTTS(speech, 'en'); 
-    
-    gtts.save('C:\\Users\\Krish\\Desktop\\AlertSystem\\public\\audio\\Voice.mp3', function (err, result){ 
-        if(err) { throw new Error(err); } 
+    var gtts = new gTTS(speech, 'en');
+
+    gtts.save('C:\\Users\\Krish\\Desktop\\AlertSystem\\public\\audio\\Voice.mp3', function (err, result) {
+        if (err) { throw new Error(err); }
         // console.log("Text to speech converted!"); 
-    }); 
+    });
     res.render('Alert', {
         email: req.body.email.toString(),
         predictValFinal: valsFinal
     });
-    
+
 
 
 
@@ -142,14 +142,14 @@ app.post('/profile', upload.single('avatar'), function (req, res, next) {
         console.log(result.tags.GPSLongitude);
         // res.json(result);
 
-        
+
         // console.log(response);
 
         const spawn = require('child_process').spawn
         // console.log("Hello")
-        const pythonProcess = spawn('python',['./predict.py' , req.file.path])
+        const pythonProcess = spawn('python', ['./predict.py', req.file.path])
         // console.log("Hello1")
-        pythonProcess.stdout.on('data',async (data) => {
+        pythonProcess.stdout.on('data', async (data) => {
             // console.log("Hello2")
             console.log(data.toString())
             const obj = {
@@ -163,7 +163,7 @@ app.post('/profile', upload.single('avatar'), function (req, res, next) {
                 email: req.body.email.toString(),
                 predictVal: data.toString()
             });
-        })        
+        })
 
     });
 })
@@ -188,7 +188,7 @@ app.post('/login', async (req, res) => {
 
             }
             console.log(locations)
-            
+
 
             res.render('landingpage', {
                 email: req.body.email.toString()
@@ -226,7 +226,7 @@ app.post('/register', async (req, res) => {
     const obj = {
         'email': req.body.email,
         'password': req.body.password,
-        'contact' : req.body.contact
+        'contact': req.body.contact
     }
     const response = await axios.post('https://driveralert-8d64b-default-rtdb.firebaseio.com/driverInfo.json', obj);
     console.log(response);
