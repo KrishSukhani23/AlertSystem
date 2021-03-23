@@ -2,7 +2,7 @@
 
 <style>
 
-p{
+h1{
   margin-top: 100px;
 }
 
@@ -208,6 +208,13 @@ body
           <input type="text" name="email" value="{{email}}" id="email" hidden></input>
         </form>
       </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/viewsigns">Learn About Traffic Signs and signals</a>
+      </li>
+      
+      <li class="nav-item active">
+        <a class="nav-link" href="/helpline">Emergency!!</a>
+      </li>
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Welcome, {{email}}
@@ -224,7 +231,8 @@ body
 </nav>
 
 
-<center><p>The sign is {{predictVal}}</p></center>
+<center><h1>The sign is {{predictVal}}</h1></center>
+<audio src="/audio/Voice2.mp3" autoplay="autoplay"></audio>
 
     <div id='map'></div>
 <form action="/find" method="POST">
@@ -232,10 +240,12 @@ body
   <input type="text" name="lat" value="" id="lat" hidden></input>
   <input type="text" name="lon" value="" id="lon" hidden></input>
   <input type="text" name="email" value="" id="email" hidden></input>
-
-  <button type="submit" id="letsgo">
+  <center>
+  <button  class = "btn btn-primary" type="submit" id="letsgo">
       Lets Go
   </button>
+  </center>
+  <br><br><br><br><br>
 </form>
 
     <script>

@@ -17,17 +17,17 @@ var nodemailer = require('nodemailer');
 
 var transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port:465,
+    port: 465,
     secure: true,
     auth: {
-      user: 'krish.sukhani2000@gmail.com',
-      pass: 'hafmrvxusbpzxyaz'
+        user: 'krish.sukhani2000@gmail.com',
+        pass: 'hafmrvxusbpzxyaz'
     },
     tls: {
         // do not fail on invalid certs
         rejectUnauthorized: false
-      }
-  });
+    }
+});
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
@@ -179,7 +179,7 @@ app.post('/find', async (req, res) => {
 })
 
 app.post('/editimages', upload.single('new'), function (req, res, next) {
-    
+
     console.log(req.body)
 
     var mailOptions = {
@@ -187,14 +187,14 @@ app.post('/editimages', upload.single('new'), function (req, res, next) {
         to: 'krish.sukhani2000@gmail.com',
         subject: req.body.subject,
         text: req.body.message
-      };
-      transporter.sendMail(mailOptions, function(error, info){
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
-          console.log(error);
+            console.log(error);
         } else {
-          console.log('Email sent: ' + info.response);
+            console.log('Email sent: ' + info.response);
         }
-      });
+    });
     res.redirect("adminlogin")
 
 });
@@ -220,18 +220,37 @@ app.post('/profile', upload.single('avatar'), function (req, res, next) {
         // console.log("Hello1")
         pythonProcess.stdout.on('data', async (data) => {
             // console.log("Hello2")
-            console.log(data.toString())
-            const obj = {
-                'Lat': result.tags.GPSLatitude,
-                'Lon': result.tags.GPSLongitude,
-                'Sign': data.toString(),
+            if (data.toString() == "None") {
+                res.render("error");
             }
-            const response = await axios.post('https://driveralert-8d64b-default-rtdb.firebaseio.com/mapInfo.json', obj);
-            res.render('Homepage', {
-                locations: JSON.stringify(locations),
-                email: req.body.email.toString(),
-                predictVal: data.toString()
-            });
+            else {
+
+                var speech = 'The sign is ' + data.toString();
+
+
+                console.log(speech)
+                var gtts = new gTTS(speech, 'en');
+
+                gtts.save('C:\\Users\\Krish\\Desktop\\AlertSystem\\public\\audio\\Voice2.mp3', function (err, result) {
+                    if (err) { throw new Error(err); }
+                    // console.log("Text to speech converted!"); 
+                });
+                console.log(data.toString())
+                const obj = {
+                    'Lat': result.tags.GPSLatitude,
+                    'Lon': result.tags.GPSLongitude,
+                    'Sign': data.toString(),
+                }
+                const response = await axios.post('https://driveralert-8d64b-default-rtdb.firebaseio.com/mapInfo.json', obj);
+                res.render('Homepage', {
+                    locations: JSON.stringify(locations),
+                    email: req.body.email.toString(),
+                    predictVal: data.toString()
+                });
+
+
+            }
+
         })
 
     });
@@ -279,11 +298,11 @@ app.post('/login', async (req, res) => {
 app.post('/adminlogin', async (req, res) => {
     const response = await axios.get('https://driveralert-8d64b-default-rtdb.firebaseio.com/adminInfo.json');
 
-        var user = response.data;
-        console.log(user)
-        if (user.email === req.body.email && user.password === req.body.password) {
-            res.redirect('editimages');
-        }
+    var user = response.data;
+    console.log(user)
+    if (user.email === req.body.email && user.password === req.body.password) {
+        res.redirect('editimages');
+    }
 
 })
 
@@ -293,7 +312,7 @@ app.post('/dlregister', async (req, res) => {
         console.log('Name should not be empty');
         return;
     }
-    
+
 
     const obj = {
         'email': req.body.email,
@@ -309,7 +328,7 @@ app.post('/register', async (req, res) => {
     console.log(req.body);
     const response7 = await axios.get('https://driveralert-8d64b-default-rtdb.firebaseio.com/licenseInfo.json');
 
-    
+
     for (var key in response7.data) {
         console.log(response7.data[key])
         var user = response7.data[key];

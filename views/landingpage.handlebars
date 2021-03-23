@@ -12,11 +12,11 @@
   cursor: pointer;
 }
 
-/*  body{
-      background-image: url(/images/mainpage.jpg);
+  body{
+      background-image: url(/images/login.jpg);
       background-size: 1700px 800px;
   }
-*/  
+  
   .sidebar-container {
     position: fixed;
     width: 220px;
@@ -30,6 +30,7 @@
   
   .content-container {
     padding-top: 20px;
+    margin-left:470px;
   }
   
   .sidebar-logo {
@@ -98,20 +99,19 @@
     background-color: transparent;
   }
   
-  .content-container {
-    padding-left: 220px;
-  }
+
 
   div.transbox {
-  margin: 50px;
+    justify-content: center;
   background-color: #ffffff;
   border: 2px solid black;
-  opacity: 0.7;
-  height:1320px
+  opacity: 1;
+  height:250px;
+  width: 650px;
+  padding-top:50px ;
 }
 
 div.transbox h2 {
-  margin: 5%;
   font-weight: bold;
   color: #000000;
 }
@@ -183,6 +183,9 @@ body
     cursor: pointer;
 }
 
+.check:hover{
+  cursor: pointer;
+}
   </style>  
 
  
@@ -201,6 +204,13 @@ body
           <input type="text" name="email" value="{{email}}" id="email" hidden></input>
         </form>
       </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/viewsigns">Learn About Traffic Signs and signals</a>
+      </li>
+      
+      <li class="nav-item active">
+        <a class="nav-link" href="/helpline">Emergency!!</a>
+      </li>
       <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Welcome, {{email}}
@@ -217,11 +227,32 @@ body
 </nav>
 <br><br><br><br><br>
 
-<form action="/profile" method="post" enctype="multipart/form-data">
-  <input type="file" name="avatar" />
-  <input type="text" name="email" value="{{email}}" id="email" hidden></input>
-  <button type="submit">Check</button>
-</form>
+
+<div class="content-container">
+
+  <div class="container-fluid">
+
+    <div class="transbox text-center">
+
+      <center>
+        <h4>
+          <form action="/profile" method="post" enctype="multipart/form-data">
+          <input style="padding-left: 125px; cursor:pointer;" type="file" name="avatar" />
+          <input class="btn btn-primary" type="text" name="email" value="{{email}}" id="email" hidden></input>
+          <br><br><br>
+          <button type="submit" class="check btn btn-primary">Check</button>
+        </form>
+        </h4>
+      </center>
+
+    </div>
+
+ </div>
+</div>
+
+
+
+
 
 <script>
   $( document ).ready(function() {
