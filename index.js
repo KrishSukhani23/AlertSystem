@@ -1,3 +1,4 @@
+// require('dotenv').config()
 var express = require('express');
 var path = require('path');
 var exphbs = require('express-handlebars');
@@ -10,6 +11,23 @@ var multer = require('multer')
 var upload = multer({ dest: 'uploads/' })
 var locations = []
 const gTTS = require('gtts');
+var nodemailer = require('nodemailer');
+
+
+
+var transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port:465,
+    secure: true,
+    auth: {
+      user: 'krish.sukhani2000@gmail.com',
+      pass: 'hafmrvxusbpzxyaz'
+    },
+    tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false
+      }
+  });
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
@@ -24,9 +42,39 @@ app.get('/', (req, res) => {
     return res.render('landing')
 })
 
+app.get('/helpline', (req, res) => {
+
+    return res.render('helpline')
+})
+
+app.get('/dlregister', (req, res) => {
+
+    return res.render('dlregister')
+})
+
+app.get('/error', (req, res) => {
+
+    return res.render('error')
+})
+
 app.get('/login', (req, res) => {
     //Serves the body of the page aka "main1.handlebars" to the container //aka "index.handlebars"
     res.render('login');
+});
+
+app.get('/adminlogin', (req, res) => {
+    //Serves the body of the page aka "main1.handlebars" to the container //aka "index.handlebars"
+    res.render('adminlogin');
+});
+
+app.get('/editimages', (req, res) => {
+    //Serves the body of the page aka "main1.handlebars" to the container //aka "index.handlebars"
+    res.render('editimages');
+});
+
+app.get('/viewsigns', (req, res) => {
+    //Serves the body of the page aka "main1.handlebars" to the container //aka "index.handlebars"
+    res.render('viewsigns');
 });
 
 app.get('/landingpage', (req, res) => {
@@ -130,6 +178,27 @@ app.post('/find', async (req, res) => {
     // return res.redirect("login");
 })
 
+app.post('/editimages', upload.single('new'), function (req, res, next) {
+    
+    console.log(req.body)
+
+    var mailOptions = {
+        from: 'krish.sukhani2000@gmail.com',
+        to: 'krish.sukhani2000@gmail.com',
+        subject: req.body.subject,
+        text: req.body.message
+      };
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+    res.redirect("adminlogin")
+
+});
+
 
 app.post('/profile', upload.single('avatar'), function (req, res, next) {
     // req.file is the `avatar` file
@@ -207,30 +276,69 @@ app.post('/login', async (req, res) => {
     }
 
 })
+app.post('/adminlogin', async (req, res) => {
+    const response = await axios.get('https://driveralert-8d64b-default-rtdb.firebaseio.com/adminInfo.json');
 
-app.post('/register', async (req, res) => {
+        var user = response.data;
+        console.log(user)
+        if (user.email === req.body.email && user.password === req.body.password) {
+            res.redirect('editimages');
+        }
+
+})
+
+app.post('/dlregister', async (req, res) => {
     console.log(req.body);
     if (req.body.email === null || req.body.email.trim().length === 0) {
         console.log('Name should not be empty');
         return;
     }
-    if (req.body.password === null || req.body.password.trim().length === 0) {
-        console.log('Password should not be empty');
-        return;
-    }
-    if (req.body.contact < 10 || req.body.conact > 10) {
-        console.log('Contact can be less or greater than 10');
-        return;
-    }
+    
 
     const obj = {
         'email': req.body.email,
-        'password': req.body.password,
-        'contact': req.body.contact
+        'name': req.body.name,
+        'dlNumber': req.body.license
     }
-    const response = await axios.post('https://driveralert-8d64b-default-rtdb.firebaseio.com/driverInfo.json', obj);
+    const response = await axios.post('https://driveralert-8d64b-default-rtdb.firebaseio.com/licenseInfo.json', obj);
     console.log(response);
     return res.redirect("login");
+})
+
+app.post('/register', async (req, res) => {
+    console.log(req.body);
+    const response7 = await axios.get('https://driveralert-8d64b-default-rtdb.firebaseio.com/licenseInfo.json');
+
+    
+    for (var key in response7.data) {
+        console.log(response7.data[key])
+        var user = response7.data[key];
+        if (req.body.email === null || req.body.email.trim().length === 0) {
+            console.log('Name should not be empty');
+            return;
+        }
+        if (req.body.password === null || req.body.password.trim().length === 0) {
+            console.log('Password should not be empty');
+            return;
+        }
+        if (req.body.contact < 10 || req.body.conact > 10) {
+            console.log('Contact can be less or greater than 10');
+            return;
+        }
+        if (user.email === req.body.email && user.dlNumber === req.body.license) {
+            const obj = {
+                'email': req.body.email,
+                'password': req.body.password,
+                'contact': req.body.contact
+            }
+            const response = await axios.post('https://driveralert-8d64b-default-rtdb.firebaseio.com/driverInfo.json', obj);
+            console.log(response);
+            return res.redirect("login");
+        }
+    }
+    return res.redirect("error");
+
+
 })
 
 app.listen(5000, () => {
